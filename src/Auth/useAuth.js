@@ -5,7 +5,6 @@ import {
     signInAnonymously, 
     signInWithCustomToken, 
     onAuthStateChanged,
-    sign
     signOut 
 } from 'firebase/auth';
 
