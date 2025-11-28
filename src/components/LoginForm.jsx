@@ -1,5 +1,6 @@
 import React from 'react';
 import Icon from './Icon';
+import Goggle from '/google-logo.svg';
 
 const LoginForm = ({ handleSignInAnonymously, handleSignInWithGoogle }) => (
     <div className="ml-4 text-center p-6 space-y-4 ">
@@ -17,7 +18,7 @@ const LoginForm = ({ handleSignInAnonymously, handleSignInWithGoogle }) => (
             onClick={handleSignInWithGoogle}
             className="w-full flex items-center justify-center px-4 py-3 border border-gray-300 text-base font-medium rounded-xl shadow-sm text-gray-700 bg-white hover:bg-gray-50 transition duration-150"
         >
-            <span className="w-6 h-6 mr-2 text-lg">🔵</span>
+            <span className="w-6 h-6 mr-2 text-lg trans-color"><img src={Goggle} alt="Google login Image"  /></span>
             Sign in with Google
         </button>
         <p className="text-xs text-gray-400 pt-2">
