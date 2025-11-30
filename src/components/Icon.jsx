@@ -16,6 +16,14 @@ const Icon = ({ name, className = "w-5 h-5" }) => {
         'alert-triangle': <span role="img" aria-label="warning">⚠️</span>,
         user: <span role="img" aria-label="user">👤</span>,
         'log-out': <span role="img" aria-label="logout">🚪</span>,
+        
+        // PWA Prompt Icons (NEW)
+        download: <span role="img" aria-label="download">⬇️</span>,
+        apple: <span role="img" aria-label="apple"></span>,
+        android: <span role="img" aria-label="android">🤖</span>,
+        share: <span role="img" aria-label="share">📤</span>,
+        menu: <span role="img" aria-label="menu">☰</span>,
+        x: <span role="img" aria-label="close">❌</span>,
     };
     
     const IconContent = icons[name] || <span>?</span>;

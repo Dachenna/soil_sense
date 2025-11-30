@@ -1,13 +1,40 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 
 import { useAuth } from './Auth/useAuth';
 import RecommendationEngine from './components/RecommendationEngine';
 import LoginForm from './components/LoginForm';
 import Header from './components/Header';
 import Icon from './components/Icon';
+import PwaInstallPrompt from './components/PwaInstallPrompt'; // <-- New Import
 
 export default function App() {
     const { user, loading, error: authError, handleSignInAnonymously, handleSignOut, handleSignInWithGoogle } = useAuth();
+    
+    // State to control the visibility of the PWA install prompt
+    const [showPwaPrompt, setShowPwaPrompt] = useState(true); 
+
+    // Effect to check screen size and determine if the prompt should be shown.
+    // We only want to show the PWA prompt on small screens (mobile).
+    useEffect(() => {
+        // Only show if the user hasn't logged in yet AND it's a small screen
+        const checkScreenSize = () => {
+            // Using a basic check: if the screen width is less than Tailwind's 'sm' breakpoint (640px)
+            if (window.innerWidth < 640 && !user) {
+                setShowPwaPrompt(true);
+            } else {
+                setShowPwaPrompt(false);
+            }
+        };
+
+        checkScreenSize();
+        window.addEventListener('resize', checkScreenSize);
+        return () => window.removeEventListener('resize', checkScreenSize);
+    }, [user]); // Re-run when user state changes
+
+    // Function to close the prompt
+    const handleClosePwaPrompt = () => {
+        setShowPwaPrompt(false);
+    };
 
     // --- RENDER LOGIC ---
 
@@ -35,6 +62,8 @@ export default function App() {
                             <span>{authError}</span>
                         </div>
                     )}
+                    {/* Show PWA Prompt Modal ONLY on small screens if not logged in */}
+                    {showPwaPrompt && <PwaInstallPrompt onClose={handleClosePwaPrompt} />}
                 </>
             );
         }
