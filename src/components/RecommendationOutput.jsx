@@ -37,6 +37,14 @@ const RecommendationOutput = ({ recommendation, ph }) => {
                 </h3>
                 {recommendation.amendmentSuggestion}
             </div>
+
+            <div className="mt-4 p-3 bg-blue-50 rounded-lg border border-blue-200">
+                <h3 className="font-bold text-lg text-blue-700 flex items-center mb-2">
+                    <Icon name="leaf" className="w-4 h-4 mr-2" />
+                    Soil Type: {recommendation.soilType}
+                </h3>
+                <p className="text-sm text-gray-700">{recommendation.soilNote}</p>
+            </div>
         </div>
     );
 };

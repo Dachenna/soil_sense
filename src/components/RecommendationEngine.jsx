@@ -1,15 +1,17 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect } from 'react';
 import { CROP_DATA } from '../cropData';
+import SOIL_TYPES from '../soilType';
 import Icon from './Icon';
 import RecommendationOutput from './RecommendationOutput';
 
 const RecommendationEngine = ({ userId, handleSignOut }) => {
     const [ph, setPh] = useState(6.5);
     const [cropKey, setCropKey] = useState('Corn');
+    const [soilType, setSoilType] = useState('Loamy');
     const [recommendation, setRecommendation] = useState(null);
     const [error, setError] = useState(null);
 
-    const calculateRecommendation = useCallback(() => {
+    const calculateRecommendation = () => {
         setError(null);
         const cropData = CROP_DATA[cropKey];
 
@@ -24,6 +26,7 @@ const RecommendationEngine = ({ userId, handleSignOut }) => {
         let phStatus = '';
         let amendmentSuggestion = '';
         let statusColor = 'text-green-700';
+        let soilNote = '';
 
         // 1. Determine pH Status and Amendment
         if (ph < minPh) {
@@ -64,16 +67,37 @@ const RecommendationEngine = ({ userId, handleSignOut }) => {
             );
         }
 
+        // 2a. Provide soil-type-specific advice
+        switch (soilType) {
+            case 'Sandy':
+                soilNote = 'Sandy soils drain quickly and hold fewer nutrients — add organic matter and consider split fertilizer applications.';
+                break;
+            case 'Clay':
+                soilNote = 'Clay soils retain water and nutrients but can be compacted; improve structure with organic matter and consider gypsum for sodium issues.';
+                break;
+            case 'Silty':
+                soilNote = 'Silty soils are fertile but may become compacted — maintain organic matter and avoid overworking when wet.';
+                break;
+            case 'Peaty':
+                soilNote = 'Peaty soils are high in organic matter and acidic — monitor pH and fertilize according to crop needs.';
+                break;
+            case 'Chalky':
+                soilNote = 'Chalky soils are alkaline and can tie up nutrients; lower pH with sulfur where appropriate and use chelated micronutrients.';
+                break;
+            default:
+                soilNote = 'Loamy soils are well-balanced — maintain with organic matter and routine soil tests.';
+        }
+
         // 2. Set the recommendation object
         setRecommendation({
-            name, optimalRange, phStatus, statusColor, baseFertilizer, notes, amendmentSuggestion
+            name, optimalRange, phStatus, statusColor, baseFertilizer, notes, amendmentSuggestion, soilType, soilNote
         });
-    }, [ph, cropKey]);
+    };
 
-    // Recalculate whenever pH or crop selection changes
+    // Recalculate whenever pH, crop selection, or soil type changes
     useEffect(() => {
         calculateRecommendation();
-    }, [ph, cropKey, calculateRecommendation]);
+    }, [ph, cropKey, soilType]);
 
     return (
         <div className="space-y-6">
@@ -93,7 +117,7 @@ const RecommendationEngine = ({ userId, handleSignOut }) => {
             
             {/* Input Section */}
             <div>
-                <label htmlFor="phInput" className="block text-sm font-medium text-gray-700 flex justify-between">
+                <label htmlFor="phInput" className=" text-sm font-medium text-gray-700 flex justify-between">
                     Soil pH: <span id="phValue" className="font-semibold text-lg text-green-700">{ph}</span>
                 </label>
                 <input 
@@ -120,6 +144,20 @@ const RecommendationEngine = ({ userId, handleSignOut }) => {
                 </select>
             </div>
 
+                    {/* Soil type Dropdown */}
+            <div>
+                <label htmlFor="soilSelect" className='block text-sm font-medium text-gray-700'>
+                    Select Soil Type
+                </label>
+                <select id="soilSelect" value={soilType} onChange={(e) => setSoilType(e.target.value)}
+                        className='mt-1 block w-full pl-3 pr-10 py-3 text-base border-gray-300 focus:outline-none focus:ring-green-500
+                         focus:border-green-500 sm:text-sm rounded-md shadow-sm bg-white border'>
+                            {SOIL_TYPES.map(type => (
+                                <option key={type} value={type}>{type}</option>
+                            ))}
+                </select>
+            </div>
+                
             {/* Error Box */}
             {error && (
                 <div className="mt-4 p-3 bg-red-100 border border-red-400 rounded-lg text-red-700 text-sm flex items-center">
