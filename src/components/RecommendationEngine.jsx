@@ -8,6 +8,10 @@ const RecommendationEngine = ({ userId, handleSignOut }) => {
     const [ph, setPh] = useState(6.5);
     const [cropKey, setCropKey] = useState('Corn');
     const [soilType, setSoilType] = useState('Loamy');
+    const [nitrogen, setNitrogen] = useState(50);
+    const [phosphorus, setPhosphorus] = useState(30);
+    const [potassium, setPotassium] = useState(40);
+    const [organicMatter, setOrganicMatter] = useState(3);
     const [recommendation, setRecommendation] = useState(null);
     const [error, setError] = useState(null);
 
@@ -90,14 +94,15 @@ const RecommendationEngine = ({ userId, handleSignOut }) => {
 
         // 2. Set the recommendation object
         setRecommendation({
-            name, optimalRange, phStatus, statusColor, baseFertilizer, notes, amendmentSuggestion, soilType, soilNote
+            name, optimalRange, phStatus, statusColor, baseFertilizer, notes, amendmentSuggestion, soilType, soilNote,
+            nitrogen, phosphorus, potassium, organicMatter
         });
     };
 
-    // Recalculate whenever pH, crop selection, or soil type changes
+    // Recalculate whenever pH, crop selection, soil type, or soil test values change
     useEffect(() => {
         calculateRecommendation();
-    }, [ph, cropKey, soilType]);
+    }, [ph, cropKey, soilType, nitrogen, phosphorus, potassium, organicMatter]);
 
     return (
         <div className="space-y-6">
@@ -156,6 +161,59 @@ const RecommendationEngine = ({ userId, handleSignOut }) => {
                                 <option key={type} value={type}>{type}</option>
                             ))}
                 </select>
+            </div>
+                
+            {/* Soil Test Values Section */}
+            <div className="border-t border-green-100 pt-4">
+                <h3 className="text-sm font-semibold text-gray-700 mb-3">Soil Test Values (mg/kg or ppm)</h3>
+                
+                {/* Nitrogen Input */}
+                <div className="mb-3">
+                    <label htmlFor="nitrogenInput" className="block text-xs font-medium text-gray-700 flex justify-between">
+                        Nitrogen (N): <span className="font-semibold text-green-700">{nitrogen}</span>
+                    </label>
+                    <input 
+                        type="range" id="nitrogenInput" min="0" max="200" step="5" value={nitrogen}
+                        onChange={(e) => setNitrogen(parseFloat(e.target.value))}
+                        className="mt-1 w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer"
+                    />
+                </div>
+
+                {/* Phosphorus Input */}
+                <div className="mb-3">
+                    <label htmlFor="phosphorusInput" className="block text-xs font-medium text-gray-700 flex justify-between">
+                        Phosphorus (P): <span className="font-semibold text-green-700">{phosphorus}</span>
+                    </label>
+                    <input 
+                        type="range" id="phosphorusInput" min="0" max="100" step="5" value={phosphorus}
+                        onChange={(e) => setPhosphorus(parseFloat(e.target.value))}
+                        className="mt-1 w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer"
+                    />
+                </div>
+
+                {/* Potassium Input */}
+                <div className="mb-3">
+                    <label htmlFor="potassiumInput" className="block text-xs font-medium text-gray-700 flex justify-between">
+                        Potassium (K): <span className="font-semibold text-green-700">{potassium}</span>
+                    </label>
+                    <input 
+                        type="range" id="potassiumInput" min="0" max="150" step="5" value={potassium}
+                        onChange={(e) => setPotassium(parseFloat(e.target.value))}
+                        className="mt-1 w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer"
+                    />
+                </div>
+
+                {/* Organic Matter Input */}
+                <div className="mb-3">
+                    <label htmlFor="organicMatterInput" className="block text-xs font-medium text-gray-700 flex justify-between">
+                        Organic Matter (%): <span className="font-semibold text-green-700">{organicMatter.toFixed(1)}</span>
+                    </label>
+                    <input 
+                        type="range" id="organicMatterInput" min="0" max="10" step="0.1" value={organicMatter}
+                        onChange={(e) => setOrganicMatter(parseFloat(e.target.value))}
+                        className="mt-1 w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer"
+                    />
+                </div>
             </div>
                 
             {/* Error Box */}
